@@ -9,6 +9,9 @@ import { AuthService } from './auth/auth.service.js';
 import { AuthModule } from './auth/auth.module.js';
 import { RentalsModule } from './rentals/rentals.module.js';
 import { MessagesModule } from './messages/messages.module.js';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
+import { PrismaModule } from './prisma/prisma.module.js';
 
 @Module({
   imports: [
@@ -18,8 +21,25 @@ import { MessagesModule } from './messages/messages.module.js';
     AuthModule,
     RentalsModule,
     MessagesModule,
+    PrismaModule,
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60000,
+          limit: 10,
+        },
+      ],
+    })
   ],
   controllers: [AuthController, RentalsController, MessagesController],
-  providers: [RentalsService, MessagesService, AuthService],
+  providers: [
+    RentalsService, 
+    MessagesService, 
+    AuthService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

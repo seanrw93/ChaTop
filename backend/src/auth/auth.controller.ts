@@ -1,25 +1,55 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Req } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport'
+import { Throttle } from '@nestjs/throttler'
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import type { Request } from 'express';
+import type { UUID } from 'crypto';
 import { AuthService } from './auth.service.js';
-import { CreateAuthDto } from './dto/create-auth.dto.js';
-import { UpdateAuthDto } from './dto/update-auth.dto.js';
+import { LoginDto } from './dto/login.dto.js';
+import { RegisterDto } from './dto/register.dto.js';
+
+type AuthenticatedRequest = Request & {
+  user: {
+    userId: UUID;
+    email: string;
+  };
+};
 
 @Controller('auth')
+@ApiTags('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  registerNewUser(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.registerNewUser(createAuthDto);
+  @ApiOperation({ summary: 'Register a new user' })
+  @ApiResponse({ status: 201, description: 'User registered successfully' })
+  @ApiResponse({ status: 409, description: 'Email is already registered' })
+  registerNewUser(@Body() registerDto: RegisterDto) {
+    return this.authService.registerNewUser(registerDto);
   }
 
   @Post('login')
-  loginExisitingUser(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.loginExisitingUser(createAuthDto);
+  @ApiOperation({ summary: 'Log in an existing user' })
+  @ApiResponse({ status: 201, description: 'JWT access token returned' })
+  @ApiResponse({ status: 401, description: 'Invalid credentials' })
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  loginExistingUser(@Body() loginDto: LoginDto) {
+    return this.authService.loginExistingUser(loginDto);
   }
 
   @Get('me')
-  getUserCredentials() {
-    return this.authService.getUserCredentials();
-  }
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get the authenticated user' })
+  @ApiResponse({ status: 200, description: 'Authenticated user returned' })
+  @ApiResponse({ status: 401, description: 'Missing or invalid JWT' })
+  getUserCredentials(@Req() request: AuthenticatedRequest) {
+    return this.authService.getUserCredentials(request.user.userId);
+  } 
 
 }

@@ -12,15 +12,15 @@ export class RentalsService {
     return `This action returns all rentals`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} rental`;
   }
 
-  update(id: number, updateRentalDto: UpdateRentalDto) {
+  update(id: string, updateRentalDto: UpdateRentalDto) {
     return `This action updates a #${id} rental`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} rental`;
   }
 }
