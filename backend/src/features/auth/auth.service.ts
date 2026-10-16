@@ -2,11 +2,11 @@ import { Injectable, ConflictException, UnauthorizedException, } from '@nestjs/c
 import { Prisma } from '../../generated/prisma/client.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RegisterDto } from './dto/register.dto.js'
-import { UpdateAuthDto } from './dto/update-auth.dto.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UUID } from 'crypto';
+import { ResponseMessage } from './contants/responses.contant.js'
 
 @Injectable()
 export class AuthService {
@@ -23,7 +23,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException(ResponseMessage.INVALID_CREDENTIALS);
     }
 
     const passwordIsValid = await bcrypt.compare(
@@ -32,7 +32,7 @@ export class AuthService {
     );
 
     if (!passwordIsValid) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException(ResponseMessage.INVALID_CREDENTIALS);
     }
 
     return {
@@ -68,13 +68,13 @@ async registerNewUser(registerDto: RegisterDto) {
         email: user.email,
       }),
     };
-    
+
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === 'P2002'
     ) {
-      throw new ConflictException('Email is already registered');
+      throw new ConflictException(ResponseMessage.EMAIL_ALREADY_REGISTERED);
     }
 
     throw error;
@@ -94,7 +94,7 @@ async getUserCredentials(userId: UUID) {
   });
 
   if (!user) {
-    throw new UnauthorizedException('User no longer exists');
+    throw new UnauthorizedException(ResponseMessage.USER_NO_LONGER_EXISTS);
   }
 
   return user;

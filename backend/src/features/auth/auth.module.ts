@@ -6,6 +6,7 @@ import { PrismaModule } from '../../prisma/prisma.module.js';
 import { AuthService } from './auth.service.js';
 import { AuthController } from './auth.controller.js';
 import { JwtStrategy } from './jwt.strategy.js';
+import { ResponseMessage } from './contants/responses.contant.js';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { JwtStrategy } from './jwt.strategy.js';
         const secret = config.get<string>('JWT_SECRET');
 
         if (!secret) {
-          throw new Error('JWT_SECRET is not configured');
+          throw new Error(ResponseMessage.JWT_SECRET_MISSING);
         }
 
         return {
