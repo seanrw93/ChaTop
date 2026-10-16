@@ -1,44 +1,39 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { AuthController } from './auth/auth.controller.js';
-import { RentalsController } from './rentals/rentals.controller.js';
-import { MessagesController } from './messages/messages.controller.js';
-import { RentalsService } from './rentals/rentals.service.js';
-import { MessagesService } from './messages/messages.service.js';
-import { AuthService } from './auth/auth.service.js';
-import { AuthModule } from './auth/auth.module.js';
-import { RentalsModule } from './rentals/rentals.module.js';
-import { MessagesModule } from './messages/messages.module.js';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { ConfigModule } from '@nestjs/config';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { AuthModule } from './features/auth/auth.module.js';
+import { JwtAuthGuard } from './common/guards/jwt-auth.guard.js';
+import { MessagesModule } from './features/messages/messages.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
+import { RentalsModule } from './features/rentals/rentals.module.js';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    PrismaModule,
     AuthModule,
     RentalsModule,
     MessagesModule,
-    PrismaModule,
     ThrottlerModule.forRoot({
       throttlers: [
         {
-          ttl: 60000,
+          ttl: 60_000,
           limit: 10,
         },
       ],
-    })
+    }),
   ],
-  controllers: [AuthController, RentalsController, MessagesController],
   providers: [
-    RentalsService, 
-    MessagesService, 
-    AuthService,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
     },
   ],
 })

@@ -1,5 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Req } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport'
+import { Controller, Get, Post, Body, Req } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler'
 import {
   ApiBearerAuth,
@@ -12,6 +11,7 @@ import type { UUID } from 'crypto';
 import { AuthService } from './auth.service.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RegisterDto } from './dto/register.dto.js';
+import { Public } from '../../common/decorators/public.decorator.js';
 
 type AuthenticatedRequest = Request & {
   user: {
@@ -25,6 +25,7 @@ type AuthenticatedRequest = Request & {
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post('register')
   @ApiOperation({ summary: 'Register a new user' })
   @ApiResponse({ status: 201, description: 'User registered successfully' })
@@ -33,6 +34,7 @@ export class AuthController {
     return this.authService.registerNewUser(registerDto);
   }
 
+  @Public()
   @Post('login')
   @ApiOperation({ summary: 'Log in an existing user' })
   @ApiResponse({ status: 201, description: 'JWT access token returned' })
@@ -43,7 +45,6 @@ export class AuthController {
   }
 
   @Get('me')
-  @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get the authenticated user' })
   @ApiResponse({ status: 200, description: 'Authenticated user returned' })

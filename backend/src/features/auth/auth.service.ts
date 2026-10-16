@@ -1,9 +1,9 @@
 import { Injectable, ConflictException, UnauthorizedException, } from '@nestjs/common';
-import { Prisma } from '../generated/prisma/client.js';
+import { Prisma } from '../../generated/prisma/client.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RegisterDto } from './dto/register.dto.js'
 import { UpdateAuthDto } from './dto/update-auth.dto.js';
-import { PrismaService } from '../prisma/prisma.service.js';
+import { PrismaService } from '../../prisma/prisma.service.js';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UUID } from 'crypto';
@@ -36,7 +36,7 @@ export class AuthService {
     }
 
     return {
-      accessToken: await this.jwtService.signAsync({
+      token: await this.jwtService.signAsync({
         sub: user.id,
         email: user.email,
       }),
@@ -62,7 +62,13 @@ async registerNewUser(registerDto: RegisterDto) {
       },
     });
 
-    return user;
+    return {
+      token: await this.jwtService.signAsync({
+        sub: user.id,
+        email: user.email,
+      }),
+    };
+    
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
