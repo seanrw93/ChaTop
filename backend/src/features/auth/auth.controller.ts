@@ -12,13 +12,7 @@ import { AuthService } from './auth.service.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RegisterDto } from './dto/register.dto.js';
 import { Public } from '../../common/decorators/public.decorator.js';
-
-type AuthenticatedRequest = Request & {
-  user: {
-    userId: UUID;
-    email: string;
-  };
-};
+import type { AuthenticatedRequest } from '../../common/types/authenticated-request.js'
 
 @Controller('auth')
 @ApiTags('auth')

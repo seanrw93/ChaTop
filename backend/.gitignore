@@ -16,6 +16,7 @@ Desktop.ini
 .env.*
 !.env.example
 *.local
+/prisma7.*
 
 # Dependencies
 node_modules/
