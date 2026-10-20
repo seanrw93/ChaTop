@@ -1,26 +1,38 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMessageDto } from './dto/create-message.dto.js';
-import { UpdateMessageDto } from './dto/update-message.dto.js';
+import { PrismaService } from '../../prisma/prisma.service.js';
+import { UUID } from 'crypto';
 
 @Injectable()
 export class MessagesService {
-  create(createMessageDto: CreateMessageDto) {
-    return 'This action adds a new message';
-  }
+  constructor(
+    private prisma: PrismaService
+  ) {}
 
-  findAll() {
-    return `This action returns all messages`;
-  }
+  async create(
+    createMessageDto: CreateMessageDto,
+    userId: UUID,
+  ) {
+    const rental = await this.prisma.rentals.findUnique({
+      where: {
+        id: createMessageDto.rental_id,
+      },
+    });
 
-  findOne(id: string) {
-    return `This action returns a #${id} message`;
-  }
+    if (!rental) {
+      throw new NotFoundException('Rental not found');
+    }
 
-  update(id: string, updateMessageDto: UpdateMessageDto) {
-    return `This action updates a #${id} message`;
-  }
+    await this.prisma.messages.create({
+      data: {
+        rental_id: createMessageDto.rental_id,
+        user_id: userId,
+        message: createMessageDto.message,
+      },
+    });
 
-  remove(id: string) {
-    return `This action removes a #${id} message`;
+    return {
+      message: 'Message sent!',
+    };
   }
 }
