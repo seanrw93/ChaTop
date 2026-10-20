@@ -85,9 +85,9 @@ export class RentalsController {
   @ApiOperation({ summary: 'Get a rental by ID' })
   @ApiParam({
     name: 'id',
-    description: 'Rental UUID',
-    format: 'uuid',
-    example: '91a983c3-9a9d-4101-8638-689f20bbbc14',
+    description: 'Rental ID',
+    format: 'number',
+    example: '1',
   })
   @ApiResponse({ status: 200, description: 'Rental returned' })
   @ApiResponse({ status: 400, description: 'Invalid rental UUID' })
@@ -98,15 +98,29 @@ export class RentalsController {
   }
 
   @Put(':id')
-  @UseInterceptors(FileInterceptor('picture'))
+  @UseInterceptors(
+    FileInterceptor('picture', {
+      storage: diskStorage({
+        destination: (_request, _file, callback) => {
+          const destination = join(process.cwd(), 'uploads', 'rentals');
+          mkdirSync(destination, { recursive: true });
+          callback(null, destination);
+        },
+        filename: (_request, file, callback) => {
+          const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${extname(file.originalname)}`;
+          callback(null, filename);
+        },
+      }),
+    }),
+  )
   @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Update a rental' })
   @ApiParam({
     name: 'id',
-    description: 'Rental UUID',
-    format: 'uuid',
-    example: '91a983c3-9a9d-4101-8638-689f20bbbc14',
+    description: 'Rental ID',
+    format: 'number',
+    example: '1',
   })
   @ApiResponse({ status: 200, description: 'Rental updated successfully' })
   @ApiResponse({ status: 400, description: 'Validation error or invalid UUID' })
