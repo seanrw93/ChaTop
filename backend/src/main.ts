@@ -2,6 +2,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import express from 'express';
+import { join } from 'node:path';
 import { AppModule } from './app.module.js';
 
 async function bootstrap() {
@@ -9,6 +11,10 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.setGlobalPrefix('api');
+  app
+    .getHttpAdapter()
+    .getInstance()
+    .use('/uploads', express.static(join(process.cwd(), 'uploads')));
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('ChaTop API')
@@ -29,6 +35,7 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
 

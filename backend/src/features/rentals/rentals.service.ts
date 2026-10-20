@@ -12,14 +12,17 @@ export class RentalsService {
 
   async create(
     createRentalDto: CreateRentalDto,
-    ownerId: UUID
+    ownerId: UUID,
+    picture?: Express.Multer.File,
   ) {
     await this.prisma.rentals.create({
       data: {
         name: createRentalDto.name,
         surface: createRentalDto.surface,
         price: createRentalDto.price,
-        picture: createRentalDto.picture,
+        picture: picture
+          ? `/uploads/rentals/${picture.filename}`
+          : createRentalDto.picture,
         description: createRentalDto.description,
         owner_id: ownerId,
       },
@@ -56,12 +59,27 @@ export class RentalsService {
         owner_id: true,
         created_at: true,
         updated_at: true,
+        users: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            created_at: true,
+            updated_at: true,
+          },
+        },
       },
     });
-    return result;
+
+    const rentals = (await result).map(({ users, ...rental }) => ({
+      ...rental,
+      owner: users,
+    }));
+
+    return { rentals };
   }
 
-  async findOne(rentalId: UUID) {
+  async findOne(rentalId: number) {
     const result = this.prisma.rentals.findFirst({
       where: { 
         id: rentalId,
@@ -76,21 +94,47 @@ export class RentalsService {
         owner_id: true,
         created_at: true,
         updated_at: true,
+        users: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            created_at: true,
+            updated_at: true,
+          },
+        },
       },
     });
-    if (!result) {
+
+    const rental = await result;
+    if (!rental) {
       throw new NotFoundException('Rental not found');
     }
-    return result;
+
+    const { users, ...rentalData } = rental;
+    return {
+      ...rentalData,
+      owner: users,
+    };
   }
 
-  async update(rentalId: UUID, ownerId: UUID, updateRentalDto: UpdateRentalDto,) {
+  async update(
+    rentalId: number,
+    ownerId: UUID,
+    updateRentalDto: UpdateRentalDto,
+    picture?: Express.Multer.File,
+  ) {
     const result = await this.prisma.rentals.updateMany({
       where: {
         id: rentalId,
         owner_id: ownerId,
       },
-      data: updateRentalDto
+      data: {
+        ...updateRentalDto,
+        ...(picture
+          ? { picture: `/uploads/rentals/${picture.filename}` }
+          : {}),
+      },
     });
 
     if (result.count === 0) {
