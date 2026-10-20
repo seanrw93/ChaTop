@@ -1,32 +1,28 @@
-# ChâTop - Portail de Location Saisonnière
+# ChâTop
 
-Application full-stack TypeScript pour mettre en relation locataires et propriétaires dans une zone touristique.
+ChâTop is a full-stack TypeScript application that connects tenants and property owners in a holiday rental area.
 
-## 📋 Contexte du projet
+This repository contains the React front end, the resources needed for development, and the NestJS back end that replaces the supplied mock API.
 
-Ce repository contient le **front-end React** de l'application ChâTop ainsi que les **ressources nécessaires** pour développer le back-end NestJS.
+## Getting started
 
-Votre mission : **Implémenter l'API REST avec NestJS** qui remplacera l'API mockée fournie.
+### Requirements
 
-## 🚀 Démarrage rapide
-
-### Prérequis
-
-- **Node.js** 22 LTS ou supérieur
-- **npm** (inclus avec Node.js)
-- **MySQL** 8.0+ (ou MariaDB 10.5+)
-- **Mockoon** Desktop (pour simuler l'API durant le développement front-end)
+- Node.js 22 LTS or later
+- npm, which is included with Node.js
+- MySQL 8.0 or later, or MariaDB 10.5 or later
+- Mockoon Desktop, for simulating the API during front-end development
 
 ### Installation
 
-#### 1. Cloner le repository
+#### 1. Clone the repository
 
 ```bash
-git clone <url-du-repo>
+git clone <repository-url>
 cd p3-dfsjs-starter
 ```
 
-#### 2. Installer et lancer le front-end React
+#### 2. Install and run the React front end
 
 ```bash
 cd frontend
@@ -34,200 +30,211 @@ npm install
 npm run dev
 ```
 
-L'application front-end sera accessible sur [http://localhost:5173](http://localhost:5173)
+The front end runs at [http://localhost:5173](http://localhost:5173).
 
-#### 3. Configurer Mockoon
+#### 3. Configure Mockoon
 
-1. Télécharger et installer Mockoon : https://mockoon.com/download/
-2. Ouvrir Mockoon
-3. Importer l'environnement : `File > Open environment`
-4. Sélectionner le fichier : `ressources/mockoon/chatop-api.json`
-5. Démarrer le serveur Mock (clic sur le bouton Play)
+1. Download and install [Mockoon](https://mockoon.com/download/).
+2. Open Mockoon.
+3. Select **File > Open environment**.
+4. Open `ressources/mockoon/chatop-api.json`.
+5. Start the mock server by clicking the play button.
 
-L'API mockée sera accessible sur [http://localhost:3001](http://localhost:3001)
+The mock API runs at [http://localhost:3001](http://localhost:3001).
 
-#### 4. Créer la base de données MySQL
+#### 4. Create the MySQL database
+
+Run the supplied schema:
 
 ```bash
 mysql -u root -p < ressources/sql/schema.sql
 ```
 
-Ou via MySQL Workbench / DBeaver :
-1. Ouvrir le fichier `ressources/sql/schema.sql`
-2. Exécuter le script
+You can also open `ressources/sql/schema.sql` in MySQL Workbench or DBeaver and run it there.
 
-## 📂 Structure du projet
+## Project structure
 
-```
+```text
 p3-dfsjs-starter/
-├── frontend/                # Application React 19 (déjà complète)
+├── frontend/                # React 19 front end
 │   ├── src/
-│   │   ├── components/     # Composants réutilisables
-│   │   ├── pages/          # Pages de l'application
-│   │   ├── services/       # Services API (axios)
-│   │   ├── types/          # Types TypeScript
+│   │   ├── components/     # Reusable components
+│   │   ├── pages/          # Application pages
+│   │   ├── services/       # Axios API services
+│   │   ├── types/          # TypeScript types
 │   │   └── App.tsx
 │   ├── package.json
 │   └── vite.config.ts
 │
 ├── ressources/
-│   ├── mockoon/           # Environnement Mockoon
+│   ├── mockoon/             # Mockoon environment
 │   │   └── chatop-api.json
-│   └── sql/               # Schéma de base de données
+│   └── sql/                 # Database schema
 │       └── schema.sql
 │
 └── README.md
 ```
 
-## 🎯 Votre mission
+## Setup tasks
 
-### Exercice 1 : Modélisation (3 étapes)
+### Set up the environment
 
-1. **Installer l'environnement** :
-   - Installer Mockoon
-   - Lancer le front-end React
-   - Tester l'application avec Mockoon
+- Install Mockoon.
+- Start the React front end.
+- Test the application against Mockoon.
 
-2. **Analyser l'API Mockoon** :
-   - Identifier toutes les routes de l'API
-   - Documenter : URL, méthode HTTP, paramètres, body, réponses
-   - Identifier les entités métier (User, Rental, Message)
+### Review the Mockoon API
 
-3. **Initialiser la base de données** :
-   - Créer la base `chatop_db`
-   - Exécuter le schéma SQL fourni
-   - Configurer Prisma (à faire lors de l'implémentation)
+Identify every API route and document its:
 
-### Exercice 2 : Implémentation (3 étapes)
+- URL
+- HTTP method
+- Parameters
+- Request body
+- Responses
 
-Vous devrez créer un back-end NestJS de zéro avec :
+Also identify the main business entities: `User`, `Rental`, and `Message`.
 
-1. **Routes d'authentification** :
-   - `POST /api/auth/register` - Créer un compte
-   - `POST /api/auth/login` - Se connecter (retour JWT)
-   - `GET /api/auth/me` - Obtenir l'utilisateur connecté
-   - Chiffrement des mots de passe (bcrypt)
-   - Sécurisation JWT (toutes routes sauf register/login/swagger)
+### Set up the database
 
-2. **Toutes les routes API** :
-   - `GET /api/rentals` - Liste des locations
-   - `GET /api/rentals/:id` - Détail d'une location
-   - `POST /api/rentals` - Créer une location (avec upload image)
-   - `PUT /api/rentals/:id` - Modifier une location
-   - `GET /api/user/:id` - Obtenir un utilisateur
-   - `POST /api/messages` - Envoyer un message
-   - Architecture Controller/Service/Repository (Prisma)
-   - Validation des DTOs (class-validator)
+- Create the `chatop_db` database.
+- Run the supplied SQL schema.
+- Configure Prisma as part of the back-end implementation.
 
-3. **Documentation et finalisation** :
-   - Documenter avec Swagger (@nestjs/swagger)
-   - Nettoyer le code
-   - README complet du back-end
+## Back-end requirements
 
-## 🔧 Technologies à utiliser
+The NestJS back end provides the following features.
 
-### Front-end (déjà fourni)
-- **React 19** - UI framework
-- **TypeScript 5.7+** - Typage statique
-- **Vite 6** - Build tool
-- **TailwindCSS 3.4** - Styling
-- **TanStack Query** - Data fetching
-- **React Router 7** - Routing
-- **Axios** - HTTP client
+#### Authentication routes
 
-### Back-end (à implémenter par vous)
-- **NestJS 11** - Framework back-end
-- **TypeScript 5.7+** (Strict Mode)
-- **Prisma** - ORM pour MySQL
-- **Passport + JWT** - Authentification
-- **bcrypt** - Chiffrement mots de passe
-- **class-validator** - Validation DTOs
-- **@nestjs/swagger** - Documentation OpenAPI
+- `POST /api/auth/register`: create an account
+- `POST /api/auth/login`: sign in and return a JWT
+- `GET /api/auth/me`: return the authenticated user
+- Hash passwords with bcrypt.
+- Protect every route except registration, login, and Swagger.
 
-## 📚 Ressources
+#### API routes
 
-### Documentation officielle
-- [NestJS Documentation](https://docs.nestjs.com/)
-- [Prisma Documentation](https://www.prisma.io/docs/)
-- [Passport JWT Strategy](https://docs.nestjs.com/security/authentication#jwt-functionality)
-- [Swagger/OpenAPI](https://docs.nestjs.com/openapi/introduction)
+- `GET /api/rentals`: return all rentals
+- `GET /api/rentals/:id`: return one rental
+- `POST /api/rentals`: create a rental, including an image upload
+- `PUT /api/rentals/:id`: update a rental
+- `GET /api/user/:id`: return a user
+- `POST /api/messages`: send a message
+- Use a controller, service, and Prisma data-access layer.
+- Validate request DTOs with `class-validator`.
 
-### Outils
-- [Mockoon](https://mockoon.com/) - Mock API server
-- [MySQL Workbench](https://www.mysql.com/products/workbench/) - Database GUI
-- [Prisma Studio](https://www.prisma.io/studio) - Database browser
-- [Postman](https://www.postman.com/) - API testing
+#### Documentation and finishing work
 
-## 🔒 Points d'attention
+- Document the API with Swagger and `@nestjs/swagger`.
+- Clean up the code.
+- Add complete back-end setup and usage instructions to the README.
 
-### Sécurité
-- ✅ JWT obligatoire pour toutes les routes (sauf register, login, swagger)
-- ✅ Mots de passe chiffrés avec bcrypt (jamais en clair)
-- ✅ Variables d'environnement pour credentials BDD (`.env`)
-- ✅ Validation des entrées utilisateur (DTOs + class-validator)
+## Technologies
+
+### Front end
+
+- React 19
+- TypeScript 5.7+
+- Vite 6
+- Tailwind CSS 3.4
+- TanStack Query
+- React Router 7
+- Axios
+
+### Back end
+
+- NestJS
+- TypeScript 5.7+ in strict mode
+- Prisma with MySQL
+- Passport and JWT for authentication
+- bcrypt for password hashing
+- `class-validator` for DTO validation
+- `@nestjs/swagger` for OpenAPI documentation
+
+## Resources
+
+### Official documentation
+
+- [NestJS documentation](https://docs.nestjs.com/)
+- [Prisma documentation](https://www.prisma.io/docs/)
+- [Passport JWT strategy](https://docs.nestjs.com/security/authentication#jwt-functionality)
+- [Swagger and OpenAPI](https://docs.nestjs.com/openapi/introduction)
+
+### Tools
+
+- [Mockoon](https://mockoon.com/): mock API server
+- [MySQL Workbench](https://www.mysql.com/products/workbench/): database GUI
+- [Prisma Studio](https://www.prisma.io/studio): database browser
+- [Postman](https://www.postman.com/): API testing
+
+## Points to keep in mind
+
+### Security
+
+- Require a JWT for every route except registration, login, and Swagger.
+- Hash passwords with bcrypt. Never store them in plain text.
+- Keep database credentials in `.env`.
+- Validate user input with DTOs and `class-validator`.
 
 ### Architecture
-- ✅ Architecture modulaire NestJS (Controller/Service/Repository)
-- ✅ Utilisation de Prisma (pas de SQL brut)
-- ✅ Séparation des responsabilités (SOLID)
-- ✅ Gestion des erreurs avec Exception Filters
 
-### Upload d'images
-- Les images des locations doivent être uploadées sur le serveur
-- L'URL de l'image est ensuite enregistrée en base de données
-- Utiliser `@UseInterceptors(FileInterceptor())` de NestJS
+- Organise the application into NestJS modules.
+- Use Prisma instead of raw SQL in the application code.
+- Keep controllers, services, and data access separate.
+- Handle errors with NestJS exceptions or exception filters.
 
-## 📝 Commandes utiles
+### Image uploads
 
-### Front-end
+- Store rental images on the server.
+- Save the resulting image URL in the database.
+- Use NestJS `FileInterceptor` to handle uploads.
+
+## Useful commands
+
+### Front end
+
 ```bash
 cd frontend
-npm install          # Installer les dépendances
-npm run dev          # Lancer en développement
-npm run build        # Build production
-npm run lint         # Vérifier le code
+npm install          # Install dependencies
+npm run dev          # Start the development server
+npm run build        # Create a production build
+npm run lint         # Check the code
 ```
 
-### Back-end (à créer)
-```bash
-# Créer le projet NestJS
-nest new backend
+### Back end
 
+```bash
 cd backend
+npm install
+
+# Install the main dependencies
 npm install @nestjs/passport passport passport-jwt
 npm install @nestjs/jwt bcrypt
 npm install @prisma/client
-npm install -D prisma
 npm install class-validator class-transformer
 npm install @nestjs/swagger
 
-# Initialiser Prisma
+# Install Prisma's command-line tool
+npm install --save-dev prisma
+
+# Initialise Prisma
 npx prisma init
 
-# Générer le client Prisma (après configuration schema.prisma)
+# Generate the Prisma client after configuring schema.prisma
 npx prisma generate
 
-# Lancer le serveur
+# Start the development server
 npm run start:dev
 ```
 
-## ⚠️ Important
+## Important
 
-- **Ne PAS modifier le front-end** - Il est déjà complet et fonctionnel
-- Le front-end communique avec l'API sur `http://localhost:3001`
-- Tous les appels API passent par `/api/*`
-- Le front-end attend les mêmes réponses que Mockoon
+- Do not modify the front end unless the assignment specifically allows it.
+- The front end communicates with the API at `http://localhost:3001`.
+- All API calls use the `/api/*` prefix.
+- The back end must return the response shapes expected by Mockoon and the front end.
 
-## 🎓 Bon courage !
+## Version
 
-Ce projet vous permettra de maîtriser :
-- ✅ L'architecture modulaire avec NestJS
-- ✅ L'authentification JWT
-- ✅ La gestion d'une base de données relationnelle avec Prisma
-- ✅ La documentation d'API avec Swagger
-- ✅ Les bonnes pratiques TypeScript et SOLID
-
----
-
-**Version** : 1.0.0
-**Date** : Janvier 2026
+1.0.0, January 2026
