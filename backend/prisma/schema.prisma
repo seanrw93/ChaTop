@@ -9,7 +9,7 @@ datasource db {
 
 model messages {
   id         String    @id @default(uuid()) @db.Char(36)
-  rental_id  String    @db.Char(36)
+  rental_id  Int
   user_id    String    @db.Char(36)
   message    String    @db.Text
   created_at DateTime? @default(now()) @db.Timestamp(0)
@@ -22,7 +22,7 @@ model messages {
 }
 
 model rentals {
-  id          String     @id @default(uuid()) @db.Char(36)
+  id          Int        @id @default(autoincrement())
   name        String     @db.VarChar(255)
   surface     Decimal    @db.Decimal(10, 2)
   price       Decimal    @db.Decimal(10, 2)
