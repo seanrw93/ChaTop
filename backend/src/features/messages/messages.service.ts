@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMessageDto } from './dto/create-message.dto.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { UUID } from 'crypto';
+import { MessageResponseMessage } from './constants/message-response-messages.js';
 
 @Injectable()
 export class MessagesService {
@@ -20,7 +21,7 @@ export class MessagesService {
     });
 
     if (!rental) {
-      throw new NotFoundException('Rental not found');
+      throw new NotFoundException(MessageResponseMessage.RENTAL_NOT_FOUND);
     }
 
     await this.prisma.messages.create({
@@ -32,7 +33,7 @@ export class MessagesService {
     });
 
     return {
-      message: 'Message sent!',
+      message: MessageResponseMessage.SENT,
     };
   }
 }

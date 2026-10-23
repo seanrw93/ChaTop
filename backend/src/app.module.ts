@@ -7,6 +7,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard.js';
 import { MessagesModule } from './features/messages/messages.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { RentalsModule } from './features/rentals/rentals.module.js';
+import { UsersModule } from './features/users/users.module.js';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { RentalsModule } from './features/rentals/rentals.module.js';
         },
       ],
     }),
+    UsersModule,
   ],
   providers: [
     {
