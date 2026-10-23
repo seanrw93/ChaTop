@@ -4,7 +4,6 @@ import {
   Get,
   Param,
   ParseIntPipe,
-  ParseUUIDPipe,
   Post,
   Put,
   Req,
@@ -28,7 +27,6 @@ import { RentalsService } from './rentals.service.js';
 import { CreateRentalDto } from './dto/create-rental.dto.js';
 import { UpdateRentalDto } from './dto/update-rental.dto.js';
 import type { AuthenticatedRequest } from '../../common/types/authenticated-request.js'
-import type { UUID } from 'crypto'
 
 @Controller('rentals')
 @ApiTags('rentals')

@@ -3,6 +3,7 @@ import { CreateRentalDto } from './dto/create-rental.dto.js';
 import { UpdateRentalDto } from './dto/update-rental.dto.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { UUID } from 'crypto';
+import { RentalResponseMessage } from './constants/rental-response-messages.js';
 
 @Injectable()
 export class RentalsService {
@@ -40,7 +41,7 @@ export class RentalsService {
     });
     
     return { 
-      message: "Rental created!" 
+      message: RentalResponseMessage.CREATED,
     };
   }
 
@@ -108,7 +109,7 @@ export class RentalsService {
 
     const rental = await result;
     if (!rental) {
-      throw new NotFoundException('Rental not found');
+      throw new NotFoundException(RentalResponseMessage.NOT_FOUND);
     }
 
     const { users, ...rentalData } = rental;
@@ -138,11 +139,11 @@ export class RentalsService {
     });
 
     if (result.count === 0) {
-      throw new NotFoundException('Rental not found');
+      throw new NotFoundException(RentalResponseMessage.NOT_FOUND);
     }
 
     return {
-      message: 'Rental updated!',
+      message: RentalResponseMessage.UPDATED,
     };
   }
 

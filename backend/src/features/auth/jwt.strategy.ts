@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import type { UUID } from 'crypto';
-import { ResponseMessage } from './contants/responses.contant.js';
+import { AuthResponseMessage } from './constants/auth-response-messages.js';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -11,7 +11,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const secret = config.get<string>('JWT_SECRET');
 
     if (!secret) {
-      throw new Error(ResponseMessage.JWT_SECRET_MISSING);
+      throw new Error(AuthResponseMessage.JWT_SECRET_MISSING);
     }
 
     super({
